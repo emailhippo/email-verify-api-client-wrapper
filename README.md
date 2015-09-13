@@ -5,7 +5,7 @@
 
 ![alt text][logo]
 
-# Email Verification Client
+# Email Verification API Client
 
 ## About
 This is a .NET package built for easy integration with [Email Hippo] RESTful API services. For
