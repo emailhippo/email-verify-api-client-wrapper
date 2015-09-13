@@ -39,7 +39,7 @@ If you're working in the .NET environment, this package can save you __hours of 
 Please note that full code for all of the snippets below are available in the "EmailHippo.EmailVerify.Api.Client.Tests" 
 project which can be found in the GitHub repository for this project.
 
-### Step1 - create and configure
+### Step 1 - create and configure
 The main client object is created using a static factory as follows:
 
 __Example 1__ - creating the client
