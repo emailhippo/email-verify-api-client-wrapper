@@ -49,7 +49,7 @@ const string LicenseKey = "{YourLicenseKey}";
 var myClient = ApiClientFactoryV2.Create(LicenseKey);
 ```
 
-### Step 2 - Use
+### Step 2 - use
 Once you have a reference to the client object, go ahead and use it.
 
 __Example 2__ - checking one or more email address synchronously
