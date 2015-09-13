@@ -42,7 +42,7 @@ project which can be found in the GitHub repository for this project.
 ### Step1 - create and configure
 The main client object is created using a static factory as follows:
 
-__Example 1__ - creating The client
+__Example 1__ - creating the client
 ```c#
 /*Visit https://www.emailhippo.com to get a license key*/
 const string LicenseKey = "{YourLicenseKey}"; 
