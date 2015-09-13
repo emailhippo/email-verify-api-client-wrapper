@@ -11,7 +11,7 @@
 This is a .NET package built for easy integration with [Email Hippo] RESTful API services. For
 further information on the RESTful server side implementation, please see the [Docs].
 
-## How to Get The Package
+## How to get the package
 From [Nuget](http://nuget.org).
 ```
 install-package EmailHippo.EmailVerify.Api.Client
@@ -39,10 +39,10 @@ If you're working in the .NET environment, this package can save you __hours of 
 Please note that full code for all of the snippets below are available in the "EmailHippo.EmailVerify.Api.Client.Tests" 
 project which can be found in the GitHub repository for this project.
 
-### Step1 - Create and Configure
+### Step1 - create and configure
 The main client object is created using a static factory as follows:
 
-__Example 1 - Creating The Client__
+__Example 1__ - creating The client
 ```c#
 /*Visit https://www.emailhippo.com to get a license key*/
 const string LicenseKey = "{YourLicenseKey}"; 
@@ -52,7 +52,7 @@ var myClient = ApiClientFactoryV2.Create(LicenseKey);
 ### Step 2 - Use
 Once you have a reference to the client object, go ahead and use it.
 
-__Example 2__ - Checking One or More Email Address Synchronously
+__Example 2__ - checking one or more email address synchronously
 ```c#
 var responses = myClient.Process(new VerificationRequest{Emails = new List<string>{"me@here.com"});
 
@@ -60,7 +60,7 @@ var responses = myClient.Process(new VerificationRequest{Emails = new List<strin
 /*..responses*/
 ```
 
-__Example 3__ - Checking More Than Email Address Asynchronously
+__Example 3__ - checking more than one email address asynchronously
 ```c#
 var responses = myClient.ProcessAsync(new VerificationRequest{Emails = new List<string>{"me@here.com"}, CancellationToken.None).Result;
 
@@ -68,13 +68,13 @@ var responses = myClient.ProcessAsync(new VerificationRequest{Emails = new List<
 /*..responses*/
 ```
 
-__Example 4__ - Progress Reporting
+__Example 4__ - progress reporting
 Progress can be captured using the built in event delegate "ProgressChanged" as follows
 ```c#
 myClient.ProgressChanged += (o, args) => Console.WriteLine(JsonConvert.SerializeObject(args));
 ```
 
-__Example 5__ - Logging
+__Example 5__ - logging
 High performance, Azure compatible exception and application logging is provided using [SLAB].
 
 Enable logging using standard [SLAB] listeners.
@@ -94,4 +94,3 @@ listener2.LogToConsole();
 ```
 
 For full details of logging options see the "EmailHippo.EmailVerify.Api.Client.Diagnostics" namespace in the source code.
-
