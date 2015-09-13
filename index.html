@@ -2,7 +2,7 @@
 <html lang="en-us">
   <head>
     <meta charset="UTF-8">
-    <title>Email-verify-api-client-wrapper by emailhippo</title>
+    <title>Email Verifation API Client Wrapper by emailhippo</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
@@ -11,7 +11,7 @@
   </head>
   <body>
     <section class="page-header">
-      <h1 class="project-name">Email-verify-api-client-wrapper</h1>
+      <h1 class="project-name">Email Verifation API Client Wrapper</h1>
       <h2 class="project-tagline">Email Address Validation API Software for .NET</h2>
       <a href="https://github.com/emailhippo/email-verify-api-client-wrapper" class="btn">View on GitHub</a>
       <a href="https://github.com/emailhippo/email-verify-api-client-wrapper/zipball/master" class="btn">Download .zip</a>
@@ -68,61 +68,87 @@ further information on the RESTful server side implementation, please see the <a
 <a id="features" class="anchor" href="#features" aria-hidden="true"><span class="octicon octicon-link"></span></a>Features</h2>
 
 <ul>
-<li>Built for <strong>high performance</strong> throughput</li>
+<li>Built for <strong>high performance</strong> throughput. Will scale for concurrency and performance based on your hardware configuration (i.e. more CPU cores = more throughput).</li>
 <li>
-<strong>Sync</strong> and <strong>async</strong> methods</li>
+<strong>Sync</strong> and <strong>async</strong> methods.</li>
 <li>
-<strong>Parallel</strong> batch processing available</li>
+<strong>Parallel</strong> batch processing available.</li>
 <li>
-<strong>Progress reporting</strong> built in</li>
+<strong>Progress reporting</strong> via event callbacks built in.</li>
 <li>
-<strong>Extensive Logging</strong> built in using async <a href="https://msdn.microsoft.com/en-us/library/dn440729(v=pandp.60).aspx">SLAB</a>
-</li>
+<strong>Extensive Logging</strong> built in using async <a href="https://msdn.microsoft.com/en-us/library/dn440729(v=pandp.60).aspx">SLAB</a>.</li>
 </ul>
 
 <h2>
 <a id="how-to-use-the-package" class="anchor" href="#how-to-use-the-package" aria-hidden="true"><span class="octicon octicon-link"></span></a>How to use the package</h2>
 
-<p>Please note that full code for all of the snippets below are available in the "EmailHippo.EmailVerify.Api.Client.Tests" 
+<p>Please note that full example code for all of the snippets below are available in the "EmailHippo.EmailVerify.Api.Client.Tests" 
 project which can be found in the GitHub repository for this project.</p>
 
 <h3>
-<a id="step-1---create-and-configure" class="anchor" href="#step-1---create-and-configure" aria-hidden="true"><span class="octicon octicon-link"></span></a>Step 1 - create and configure</h3>
+<a id="step-1---license-and-initialize" class="anchor" href="#step-1---license-and-initialize" aria-hidden="true"><span class="octicon octicon-link"></span></a>Step 1 - license and initialize</h3>
+
+<p>This software must be initialized before use. Initializaton is only needed once per app domain. The best palce to do this in in the hosting process bootstrap code. For example, a web app use global.asax, a console app use Main() method.</p>
+
+<p>Supply license configuration to the software by either:</p>
+
+<p><strong>XML configuration</strong>
+In app.config or web.config</p>
+
+<div class="highlight highlight-XML"><pre>&lt;<span class="pl-ent">appSettings</span>&gt;
+    &lt;<span class="pl-ent">add</span> <span class="pl-e">key</span>=<span class="pl-s"><span class="pl-pds">"</span>Hippo.EmailVerifyApiKey<span class="pl-pds">"</span></span> <span class="pl-e">value</span>=<span class="pl-s"><span class="pl-pds">"</span>{your license key}<span class="pl-pds">"</span></span>/&gt;
+&lt;/<span class="pl-ent">appSettings</span>&gt;</pre></div>
+
+<p>and then call</p>
+
+<div class="highlight highlight-C#"><pre>ApiClientFactoryV2.Initialize();</pre></div>
+
+<p>or:</p>
+
+<p><strong>in code as part of initialization</strong></p>
+
+<p>Invoke static method ApiClientFactoryV2.Initialize(string licenseKey = null)... as follows if supplying the license in code:</p>
+
+<div class="highlight highlight-C#"><pre><span class="pl-c">/*Visit https://www.emailhippo.com to get a license key*/</span>
+ApiClientFactoryV2.Initialize(<span class="pl-s"><span class="pl-pds">"</span>{your license key}<span class="pl-pds">"</span></span>);</pre></div>
+
+<h3>
+<a id="step-2---create" class="anchor" href="#step-2---create" aria-hidden="true"><span class="octicon octicon-link"></span></a>Step 2 - create</h3>
 
 <p>The main client object is created using a static factory as follows:</p>
 
-<p><strong>Example 1</strong> - creating the client</p>
+<p><strong>Example 2</strong> - creating the client</p>
 
-<div class="highlight highlight-c#"><pre><span class="pl-c">/*Visit https://www.emailhippo.com to get a license key*/</span>
-<span class="pl-k">const</span> <span class="pl-k">string</span> LicenseKey = <span class="pl-s"><span class="pl-pds">"</span>{YourLicenseKey}<span class="pl-pds">"</span></span>; 
-<span class="pl-k">var</span> myClient = ApiClientFactoryV2.Create(LicenseKey);</pre></div>
+<div class="highlight highlight-c#"><pre><span class="pl-k">var</span> myService = ApiClientFactoryV2.Create();</pre></div>
 
 <h3>
-<a id="step-2---use" class="anchor" href="#step-2---use" aria-hidden="true"><span class="octicon octicon-link"></span></a>Step 2 - use</h3>
+<a id="step-3---use" class="anchor" href="#step-3---use" aria-hidden="true"><span class="octicon octicon-link"></span></a>Step 3 - use</h3>
 
 <p>Once you have a reference to the client object, go ahead and use it.</p>
 
-<p><strong>Example 2</strong> - checking one or more email address synchronously</p>
+<p><strong>Example 3</strong> - checking one or more email address synchronously</p>
 
-<div class="highlight highlight-c#"><pre><span class="pl-k">var</span> responses = myClient.Process(<span class="pl-k">new</span> VerificationRequest{Emails = <span class="pl-k">new</span> List&lt;<span class="pl-k">string</span>&gt;{<span class="pl-s"><span class="pl-pds">"</span>me@here.com<span class="pl-pds">"</span></span>});
-
-<span class="pl-c">/*Process responses*/</span>
-<span class="pl-c">/*..responses*/</span></pre></div>
-
-<p><strong>Example 3</strong> - checking more than one email address asynchronously</p>
-
-<div class="highlight highlight-c#"><pre><span class="pl-k">var</span> responses = myClient.ProcessAsync(<span class="pl-k">new</span> VerificationRequest{Emails = <span class="pl-k">new</span> List&lt;<span class="pl-k">string</span>&gt;{<span class="pl-s"><span class="pl-pds">"</span>me@here.com<span class="pl-pds">"</span></span>}, CancellationToken.None).Result;
+<div class="highlight highlight-c#"><pre><span class="pl-k">var</span> responses = myService.Process(<span class="pl-k">new</span> VerificationRequest{Emails = <span class="pl-k">new</span> List&lt;<span class="pl-k">string</span>&gt;{<span class="pl-s"><span class="pl-pds">"</span>me@here.com<span class="pl-pds">"</span></span>});
 
 <span class="pl-c">/*Process responses*/</span>
 <span class="pl-c">/*..responses*/</span></pre></div>
 
-<p><strong>Example 4</strong> - progress reporting
-Progress can be captured using the built in event delegate "ProgressChanged" as follows</p>
+<p><strong>Example 4</strong> - checking more than one email address asynchronously</p>
 
-<div class="highlight highlight-c#"><pre>myClient.ProgressChanged += (o, args) =&gt; Console.WriteLine(JsonConvert.SerializeObject(args));</pre></div>
+<div class="highlight highlight-c#"><pre><span class="pl-k">var</span> responses = myService.ProcessAsync(<span class="pl-k">new</span> VerificationRequest{Emails = <span class="pl-k">new</span> List&lt;<span class="pl-k">string</span>&gt;{<span class="pl-s"><span class="pl-pds">"</span>me@here.com<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>me2@here.com<span class="pl-pds">"</span></span>}, CancellationToken.None).Result;
 
-<p><strong>Example 5</strong> - logging
-High performance, Azure compatible exception and application logging is provided using <a href="https://msdn.microsoft.com/en-us/library/dn440729(v=pandp.60).aspx">SLAB</a>.</p>
+<span class="pl-c">/*Process responses*/</span>
+<span class="pl-c">/*..responses*/</span></pre></div>
+
+<p><strong>Example 5</strong> - progress reporting</p>
+
+<p>Progress can be captured using the built in event delegate "ProgressChanged" as follows</p>
+
+<div class="highlight highlight-c#"><pre>myService.ProgressChanged += (o, args) =&gt; Console.WriteLine(JsonConvert.SerializeObject(args));</pre></div>
+
+<p><strong>Example 6</strong> - logging</p>
+
+<p>High performance, Azure compatible exception and application logging is provided using <a href="https://msdn.microsoft.com/en-us/library/dn440729(v=pandp.60).aspx">SLAB</a>.</p>
 
 <p>Enable logging using standard <a href="https://msdn.microsoft.com/en-us/library/dn440729(v=pandp.60).aspx">SLAB</a> listeners.</p>
 
@@ -142,7 +168,7 @@ listener2.LogToConsole();</pre></div>
 <p>For full details of logging options see the "EmailHippo.EmailVerify.Api.Client.Diagnostics" namespace in the source code.</p>
 
       <footer class="site-footer">
-        <span class="site-footer-owner"><a href="https://github.com/emailhippo/email-verify-api-client-wrapper">Email-verify-api-client-wrapper</a> is maintained by <a href="https://github.com/emailhippo">emailhippo</a>.</span>
+        <span class="site-footer-owner"><a href="https://github.com/emailhippo/email-verify-api-client-wrapper">Email Verifation API Client Wrapper</a> is maintained by <a href="https://github.com/emailhippo">emailhippo</a>.</span>
 
         <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
       </footer>
