@@ -121,7 +121,7 @@ namespace EmailHippo.EmailVerify.Api.Client.Services.EmailHippo.V2
 
             try
             {
-                processLocalAsync = this.ProcessLocalAsync(request.Emails, CancellationToken.None).Result;
+                processLocalAsync = this.ProcessLocalAsync(request.Emails.ToSafeEnumerable().ToList(), CancellationToken.None).Result;
             }
             catch (Exception exception)
             {
@@ -173,7 +173,7 @@ namespace EmailHippo.EmailVerify.Api.Client.Services.EmailHippo.V2
             try
             {
                 processLocalAsync =
-                    await this.ProcessLocalAsync(request.Emails, cancellationToken, Environment.ProcessorCount);
+                    await this.ProcessLocalAsync(request.Emails.ToSafeEnumerable().ToList(), cancellationToken, Environment.ProcessorCount);
             }
             catch (Exception exception)
             {
@@ -246,10 +246,7 @@ namespace EmailHippo.EmailVerify.Api.Client.Services.EmailHippo.V2
             Interlocked.Exchange(ref currentIndexCounter, 0);
 
             var rtnBuilder = new List<VerificationResponse>();
-
-            Entities.Clients.V2.VerificationResponse verificationResponse =
-                null;
-
+            
             var processingList = emails.ToSafeEnumerable().ToList();
 
             var totalCount = processingList.Count();
@@ -257,6 +254,7 @@ namespace EmailHippo.EmailVerify.Api.Client.Services.EmailHippo.V2
             var actionBlock = new ActionBlock<string>(
                 async email =>
                     {
+                        Entities.Clients.V2.VerificationResponse verificationResponse = null;
                         try
                         {
                             verificationResponse =
@@ -290,7 +288,6 @@ namespace EmailHippo.EmailVerify.Api.Client.Services.EmailHippo.V2
                             Interlocked.Increment(ref currentIndexCounter);
 
                             /*Progress calculations are meaningless for parallel processing therefore set to zero. In parallel mode, event will still return response*/
-
                             var i = degreeOfParallelism == 1 ? CalculatePercentageProgress(currentIndexCounter, totalCount) : 0;
 
                             this.OnProgressChanged(new ProgressEventArgs(totalCount, i, response));

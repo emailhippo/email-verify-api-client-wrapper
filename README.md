@@ -29,52 +29,79 @@ If you're working in the .NET environment, this package can save you __hours of 
  * __API license key__ from [Email Hippo]
 
 ## Features
- * Built for __high performance__ throughput
- * __Sync__ and __async__ methods
- * __Parallel__ batch processing available
- * __Progress reporting__ built in
- * __Extensive Logging__ built in using async [SLAB]
+ * Built for __high performance__ throughput. Will scale for concurrency and performance based on your hardware configuration (i.e. more CPU cores = more throughput).
+ * __Sync__ and __async__ methods.
+ * __Parallel__ batch processing available.
+ * __Progress reporting__ via event callbacks built in.
+ * __Extensive Logging__ built in using async [SLAB].
   
 ## How to use the package
-Please note that full code for all of the snippets below are available in the "EmailHippo.EmailVerify.Api.Client.Tests" 
+Please note that full example code for all of the snippets below are available in the "EmailHippo.EmailVerify.Api.Client.Tests" 
 project which can be found in the GitHub repository for this project.
 
-### Step 1 - create and configure
+### Step 1 - license and initialize
+This software must be initialized before use. Initializaton is only needed once per app domain. The best palce to do this in in the hosting process bootstrap code. For example, a web app use global.asax, a console app use Main() method.
+
+Supply license configuration to the software by either:
+
+__XML configuration__
+In app.config or web.config
+```XML
+<appSettings>
+    <add key="Hippo.EmailVerifyApiKey" value="{your license key}"/>
+</appSettings>
+```
+and then call
+```C#
+ApiClientFactoryV2.Initialize();
+```
+or:
+
+__in code as part of initialization__
+
+Invoke static method ApiClientFactoryV2.Initialize(string licenseKey = null)... as follows if supplying the license in code:
+```C#
+/*Visit https://www.emailhippo.com to get a license key*/
+ApiClientFactoryV2.Initialize("{your license key}");
+```
+
+
+### Step 2 - create
 The main client object is created using a static factory as follows:
 
-__Example 1__ - creating the client
+__Example 2__ - creating the client
 ```c#
-/*Visit https://www.emailhippo.com to get a license key*/
-const string LicenseKey = "{YourLicenseKey}"; 
-var myClient = ApiClientFactoryV2.Create(LicenseKey);
+var myService = ApiClientFactoryV2.Create();
 ```
 
-### Step 2 - use
+### Step 3 - use
 Once you have a reference to the client object, go ahead and use it.
 
-__Example 2__ - checking one or more email address synchronously
+__Example 3__ - checking one or more email address synchronously
 ```c#
-var responses = myClient.Process(new VerificationRequest{Emails = new List<string>{"me@here.com"});
+var responses = myService.Process(new VerificationRequest{Emails = new List<string>{"me@here.com"});
 
 /*Process responses*/
 /*..responses*/
 ```
 
-__Example 3__ - checking more than one email address asynchronously
+__Example 4__ - checking more than one email address asynchronously
 ```c#
-var responses = myClient.ProcessAsync(new VerificationRequest{Emails = new List<string>{"me@here.com"}, CancellationToken.None).Result;
+var responses = myService.ProcessAsync(new VerificationRequest{Emails = new List<string>{"me@here.com","me2@here.com"}, CancellationToken.None).Result;
 
 /*Process responses*/
 /*..responses*/
 ```
 
-__Example 4__ - progress reporting
+__Example 5__ - progress reporting
+
 Progress can be captured using the built in event delegate "ProgressChanged" as follows
 ```c#
-myClient.ProgressChanged += (o, args) => Console.WriteLine(JsonConvert.SerializeObject(args));
+myService.ProgressChanged += (o, args) => Console.WriteLine(JsonConvert.SerializeObject(args));
 ```
 
-__Example 5__ - logging
+__Example 6__ - logging
+
 High performance, Azure compatible exception and application logging is provided using [SLAB].
 
 Enable logging using standard [SLAB] listeners.

@@ -23,6 +23,8 @@ namespace EmailHippo.EmailVerify.Api.Client
     #region Usings
 
     using System;
+    using System.Configuration;
+    using System.Threading;
 
     using EmailHippo.EmailVerify.Api.Client.Entities.Service.V2;
     using EmailHippo.EmailVerify.Api.Client.Interfaces.Service;
@@ -33,43 +35,112 @@ namespace EmailHippo.EmailVerify.Api.Client
     #endregion
 
     /// <summary>
-    /// The API client factory for V2 endpoint.
+    ///     The API client factory for V2 endpoint.
     /// </summary>
     public static class ApiClientFactoryV2
     {
+        #region Static Fields
+
+        /// <summary>
+        ///     The default client lazy.
+        /// </summary>
+        private static readonly Lazy<DefaultClient> DefaultClientLazy =
+            new Lazy<DefaultClient>(() => new DefaultClient(KeyAuthenticationLazy.Value));
+
+        /// <summary>
+        ///     The default service lazy.
+        /// </summary>
+        private static readonly Lazy<DefaultService> DefaultServiceLazy =
+            new Lazy<DefaultService>(() => new DefaultService(DefaultClientLazy.Value));
+
+        /// <summary>
+        ///     The key authentication lazy.
+        /// </summary>
+        private static readonly Lazy<KeyAuthentication> KeyAuthenticationLazy =
+            new Lazy<KeyAuthentication>(
+                () =>
+                new KeyAuthentication
+                    {
+                        Get =
+                            new Entities.Configuration.V2.KeyAuthentication
+                                {
+                                    LicenseKey =
+                                        appDomainLicenseKey
+                                }
+                    });
+
+        /// <summary>
+        ///     The app domain license key.
+        /// </summary>
+        private static string appDomainLicenseKey;
+
+        /// <summary>
+        ///     The initialized.
+        /// </summary>
+        private static long initialized;
+
+        #endregion
+
         #region Public Methods and Operators
 
         /// <summary>
-        /// Creates the specified license key.
+        ///     Creates the specified license key.
         /// </summary>
-        /// <param name="licenseKey">
-        /// The license key.
-        /// </param>
         /// <returns>
-        /// The <see cref="IService"/>.
+        ///     The <see cref="IService" />.
         /// </returns>
-        /// <exception cref="System.ArgumentNullException">
-        /// licenseKey is null
+        /// <exception cref="System.InvalidOperationException">
+        ///     License key not set. Call Initialize method first and either add key
+        ///     to appSettings, key='Hippo.EmailVerifyApiKey' or supply licenseKey parameter to Initialize(licenseKey) method.
         /// </exception>
-        public static IService<VerificationRequest, VerificationResponses, ProgressEventArgs> Create(string licenseKey)
+        public static IService<VerificationRequest, VerificationResponses, ProgressEventArgs> Create()
         {
-            if (string.IsNullOrWhiteSpace(licenseKey))
+            if (Interlocked.Read(ref initialized) < 1)
             {
-                throw new ArgumentNullException("licenseKey");
+                throw new InvalidOperationException(
+                    "License key not set. Call Initialize method first and either add key to appSettings, key='Hippo.EmailVerifyApiKey' or supply licenseKey parameter to Initialize(licenseKey) method.");
             }
 
-            return
-                new DefaultService(
-                    new DefaultClient(
-                        new KeyAuthentication
-                            {
-                                Get =
-                                    new Entities.Configuration.V2.KeyAuthentication
-                                        {
-                                            LicenseKey =
-                                                licenseKey
-                                        }
-                            }));
+            return DefaultServiceLazy.Value;
+        }
+
+        /// <summary>
+        /// Initializes the software.
+        ///     <remarks>
+        /// This needs to be called only once per app domain.
+        /// </remarks>
+        /// </summary>
+        /// <param name="licenseKey">
+        /// <para>
+        /// [Optional] The license key. If not supplied, software looks for the key in appSettings,
+        ///         key='Hippo.EmailVerifyApiKey'
+        ///     </para>
+        /// </param>
+        public static void Initialize(string licenseKey = null)
+        {
+            if (Interlocked.Read(ref initialized) > 0)
+            {
+                return;
+            }
+
+            if (!string.IsNullOrWhiteSpace(licenseKey))
+            {
+                appDomainLicenseKey = licenseKey;
+            }
+            else
+            {
+                var appSetting = ConfigurationManager.AppSettings["Hippo.EmailVerifyApiKey"];
+
+                if (string.IsNullOrWhiteSpace(appSetting))
+                {
+                    throw new InvalidOperationException("licenseKey not set in Initialize(licenseKey..) parameter. Also, key not found in appSettings, key='Hippo.EmailVerifyApiKey'. To rectify this error, please call Initialize method first and either add key to appSettings, key='Hippo.EmailVerifyApiKey' or supply licenseKey parameter to Initialize(licenseKey) method.");
+                }
+
+                appDomainLicenseKey = appSetting;
+
+            }
+
+            Interlocked.Exchange(ref initialized, 1);
         }
 
         #endregion

@@ -104,6 +104,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Integration\ApiClientFactoryV2Tests.cs" />
     <Compile Include="Integration\Services\EmailHippo\V2\DefaultServiceTests.cs" />
     <Compile Include="Unit\Diagnostics\EventSources\ActivityLoggingEventSourceTests.cs" />
     <Compile Include="Unit\Diagnostics\EventSources\ExceptionLoggingEventSourceTests.cs" />
