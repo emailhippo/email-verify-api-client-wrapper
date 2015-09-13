@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.40629.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Component", "Component", "{4929AD69-54C5-4866-B98B-43AD10834445}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{E16906E0-91D8-41ED-8D65-6AE5B271A476}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmailHippo.EmailVerify.Api.Client", "Component\EmailHippo.EmailVerify.Api.Client\EmailHippo.EmailVerify.Api.Client.csproj", "{9D1EA330-4F5D-41AE-A862-4A3DC080253C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmailHippo.EmailVerify.Api.Client.Tests", "Tests\EmailHippo.EmailVerify.Api.Client.Tests\EmailHippo.EmailVerify.Api.Client.Tests.csproj", "{483870C6-1E88-4537-B56E-8987FCAD9442}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9D1EA330-4F5D-41AE-A862-4A3DC080253C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D1EA330-4F5D-41AE-A862-4A3DC080253C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D1EA330-4F5D-41AE-A862-4A3DC080253C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D1EA330-4F5D-41AE-A862-4A3DC080253C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{483870C6-1E88-4537-B56E-8987FCAD9442}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{483870C6-1E88-4537-B56E-8987FCAD9442}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{483870C6-1E88-4537-B56E-8987FCAD9442}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{483870C6-1E88-4537-B56E-8987FCAD9442}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9D1EA330-4F5D-41AE-A862-4A3DC080253C} = {4929AD69-54C5-4866-B98B-43AD10834445}
+		{483870C6-1E88-4537-B56E-8987FCAD9442} = {E16906E0-91D8-41ED-8D65-6AE5B271A476}
+	EndGlobalSection
+EndGlobal
