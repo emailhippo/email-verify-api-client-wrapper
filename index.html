@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Email-verify-api-client-wrapper by emailhippo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Email-verify-api-client-wrapper</h1>
+      <h2 class="project-tagline">Email Address Validation API Software for .NET</h2>
+      <a href="https://github.com/emailhippo/email-verify-api-client-wrapper" class="btn">View on GitHub</a>
+      <a href="https://github.com/emailhippo/email-verify-api-client-wrapper/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/emailhippo/email-verify-api-client-wrapper/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <p><img src="https://s3.amazonaws.com/emailhippo/bizbranding/co.logos/eh-horiz-695x161.png" alt="alt text" title="Email Hippo"></p>
+
+<h1>
+<a id="email-verification-api-client" class="anchor" href="#email-verification-api-client" aria-hidden="true"><span class="octicon octicon-link"></span></a>Email Verification API Client</h1>
+
+<h2>
+<a id="about" class="anchor" href="#about" aria-hidden="true"><span class="octicon octicon-link"></span></a>About</h2>
+
+<p>This is a .NET package built for easy integration with <a href="https://www.emailhippo.com">Email Hippo</a> RESTful API services. For
+further information on the RESTful server side implementation, please see the <a href="http://api-docs.emailhippo.com">Docs</a>.</p>
+
+<h2>
+<a id="how-to-get-the-package" class="anchor" href="#how-to-get-the-package" aria-hidden="true"><span class="octicon octicon-link"></span></a>How to get the package</h2>
+
+<p>From <a href="http://nuget.org">Nuget</a>.</p>
+
+<pre><code>install-package EmailHippo.EmailVerify.Api.Client
+</code></pre>
+
+<h2>
+<a id="who-is-the-package-for" class="anchor" href="#who-is-the-package-for" aria-hidden="true"><span class="octicon octicon-link"></span></a>Who is the package for?</h2>
+
+<ul>
+<li>
+<strong>.NET</strong> developers and system integrators needing a fast start to using <a href="https://www.emailhippo.com">Email Hippo</a> technology.</li>
+</ul>
+
+<h2>
+<a id="what-this-package-can-do" class="anchor" href="#what-this-package-can-do" aria-hidden="true"><span class="octicon octicon-link"></span></a>What this package can do</h2>
+
+<p>If you're working in the .NET environment, this package can save you <strong>hours of work</strong> writing your own JSON parsers, message pumping logic, threading and logging code.</p>
+
+<h2>
+<a id="prerequisites" class="anchor" href="#prerequisites" aria-hidden="true"><span class="octicon octicon-link"></span></a>Prerequisites</h2>
+
+<ul>
+<li>
+<strong>Visual Studio</strong> 2012 or later</li>
+<li>
+<strong>.NET 4.5</strong> or later</li>
+<li>
+<strong>API license key</strong> from <a href="https://www.emailhippo.com">Email Hippo</a>
+</li>
+</ul>
+
+<h2>
+<a id="features" class="anchor" href="#features" aria-hidden="true"><span class="octicon octicon-link"></span></a>Features</h2>
+
+<ul>
+<li>Built for <strong>high performance</strong> throughput</li>
+<li>
+<strong>Sync</strong> and <strong>async</strong> methods</li>
+<li>
+<strong>Parallel</strong> batch processing available</li>
+<li>
+<strong>Progress reporting</strong> built in</li>
+<li>
+<strong>Extensive Logging</strong> built in using async <a href="https://msdn.microsoft.com/en-us/library/dn440729(v=pandp.60).aspx">SLAB</a>
+</li>
+</ul>
+
+<h2>
+<a id="how-to-use-the-package" class="anchor" href="#how-to-use-the-package" aria-hidden="true"><span class="octicon octicon-link"></span></a>How to use the package</h2>
+
+<p>Please note that full code for all of the snippets below are available in the "EmailHippo.EmailVerify.Api.Client.Tests" 
+project which can be found in the GitHub repository for this project.</p>
+
+<h3>
+<a id="step-1---create-and-configure" class="anchor" href="#step-1---create-and-configure" aria-hidden="true"><span class="octicon octicon-link"></span></a>Step 1 - create and configure</h3>
+
+<p>The main client object is created using a static factory as follows:</p>
+
+<p><strong>Example 1</strong> - creating the client</p>
+
+<div class="highlight highlight-c#"><pre><span class="pl-c">/*Visit https://www.emailhippo.com to get a license key*/</span>
+<span class="pl-k">const</span> <span class="pl-k">string</span> LicenseKey = <span class="pl-s"><span class="pl-pds">"</span>{YourLicenseKey}<span class="pl-pds">"</span></span>; 
+<span class="pl-k">var</span> myClient = ApiClientFactoryV2.Create(LicenseKey);</pre></div>
+
+<h3>
+<a id="step-2---use" class="anchor" href="#step-2---use" aria-hidden="true"><span class="octicon octicon-link"></span></a>Step 2 - use</h3>
+
+<p>Once you have a reference to the client object, go ahead and use it.</p>
+
+<p><strong>Example 2</strong> - checking one or more email address synchronously</p>
+
+<div class="highlight highlight-c#"><pre><span class="pl-k">var</span> responses = myClient.Process(<span class="pl-k">new</span> VerificationRequest{Emails = <span class="pl-k">new</span> List&lt;<span class="pl-k">string</span>&gt;{<span class="pl-s"><span class="pl-pds">"</span>me@here.com<span class="pl-pds">"</span></span>});
+
+<span class="pl-c">/*Process responses*/</span>
+<span class="pl-c">/*..responses*/</span></pre></div>
+
+<p><strong>Example 3</strong> - checking more than one email address asynchronously</p>
+
+<div class="highlight highlight-c#"><pre><span class="pl-k">var</span> responses = myClient.ProcessAsync(<span class="pl-k">new</span> VerificationRequest{Emails = <span class="pl-k">new</span> List&lt;<span class="pl-k">string</span>&gt;{<span class="pl-s"><span class="pl-pds">"</span>me@here.com<span class="pl-pds">"</span></span>}, CancellationToken.None).Result;
+
+<span class="pl-c">/*Process responses*/</span>
+<span class="pl-c">/*..responses*/</span></pre></div>
+
+<p><strong>Example 4</strong> - progress reporting
+Progress can be captured using the built in event delegate "ProgressChanged" as follows</p>
+
+<div class="highlight highlight-c#"><pre>myClient.ProgressChanged += (o, args) =&gt; Console.WriteLine(JsonConvert.SerializeObject(args));</pre></div>
+
+<p><strong>Example 5</strong> - logging
+High performance, Azure compatible exception and application logging is provided using <a href="https://msdn.microsoft.com/en-us/library/dn440729(v=pandp.60).aspx">SLAB</a>.</p>
+
+<p>Enable logging using standard <a href="https://msdn.microsoft.com/en-us/library/dn440729(v=pandp.60).aspx">SLAB</a> listeners.</p>
+
+<div class="highlight highlight-c#"><pre><span class="pl-k">var</span> ObservableEventListener listener1;
+<span class="pl-k">var</span> ObservableEventListener listener2;
+
+listener1 = <span class="pl-k">new</span> ObservableEventListener();
+listener1.EnableEvents(ExceptionLoggingEventSource.Log, EventLevel.Error);
+
+listener1.LogToConsole();
+
+listener2 = <span class="pl-k">new</span> ObservableEventListener();
+listener2.EnableEvents(ActivityLoggingEventSource.Log, EventLevel.Error, Keywords.All);
+
+listener2.LogToConsole();</pre></div>
+
+<p>For full details of logging options see the "EmailHippo.EmailVerify.Api.Client.Diagnostics" namespace in the source code.</p>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/emailhippo/email-verify-api-client-wrapper">Email-verify-api-client-wrapper</a> is maintained by <a href="https://github.com/emailhippo">emailhippo</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+            <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-65302523-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+  </body>
+</html>
