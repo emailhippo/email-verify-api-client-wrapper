@@ -48,7 +48,7 @@ namespace EmailHippo.EmailVerify.Api.Client.Services.EmailHippo.V2
     /// <summary>
     ///     The default service.
     /// </summary>
-    internal sealed class DefaultService : IService<VerificationRequest, VerificationResponses, ProgressEventArgs>
+    public sealed class DefaultService : IService<VerificationRequest, VerificationResponses, ProgressEventArgs>
     {
         #region Fields
 
