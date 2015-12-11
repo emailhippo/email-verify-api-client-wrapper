@@ -22,8 +22,7 @@
     </frameworkAssemblies>
   </metadata>
   <files>
-    <file src="bin\$configuration$\$id$.xml"/>
-    <file src="bin\$configuration$\$id$.pdb"/>
+    <file src="bin\$configuration$\$id$.*" target="lib\net45"/>
     <file src="readme.txt" target="" />
   </files>
 </package>
