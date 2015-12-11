@@ -1,0 +1,86 @@
+﻿@{
+    ViewBag.Title = "Email Valdiation Demo";
+}
+
+@model EmailHippo.EmailVerify.Api.Client.MvcTests.Models.EmailValidationModel
+
+<div class="row" style="margin-bottom: 80px;"></div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-8">
+                <h2>About</h2>
+                <p>Email Verification Demo.</p>
+            </div>
+            <div class="col-md-4">
+                <img src="https://s3.amazonaws.com/emailhippo/bizbranding/co.logos/eh-classicdb-240x240.png" class="img-responsive" alt="email hippo"/>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <h2>Query</h2>
+        @using (Html.BeginForm("Index", "Home", FormMethod.Post, new { role = "form" }))
+        {
+            @Html.AntiForgeryToken()
+            <div class="form-group required">
+                @Html.LabelFor(r => r.LicenseKey, new { @class = "control-label" })
+                <div class="input-group">
+                    <div class="input-group-addon">
+                        <i class="fa fa-key"></i>
+                    </div>
+                    @Html.TextBoxFor(r => r.LicenseKey, new { @class = "form-control", placeholder = "your license key" })
+                </div>
+                @Html.ValidationMessageFor(r => r.LicenseKey, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group required">
+                @Html.LabelFor(r => r.EmailAddress, new { @class = "control-label" })
+                <div class="input-group">
+                    <div class="input-group-addon">
+                        <i class="fa fa-envelope"></i>
+                    </div>
+                    @Html.TextBoxFor(r => r.EmailAddress, new { @class = "form-control", placeholder = "your email address" })
+                </div>
+                @Html.ValidationMessageFor(r => r.EmailAddress, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group center-block margin-bottom-20 text-center">
+
+                <p>
+                    <button type="submit" class="btn btn-primary bg-color-green rounded-2x btn-lg"><i class="fa fa-envelope-o"></i> Submit</button>
+                </p>
+            </div>
+        }
+    </div>
+    <div class="col-md-6">
+        @if (Model != null && Model.DisplayResults)
+        {
+        <div class="row">
+            <div class="col-md-12">
+                <h2>Results</h2>
+                <div class="alert alert-info rounded-2x">
+                    <table class="table table-striped">
+                        <tr>
+                            <th>Email</th>
+                            <td>@Model.EmailAddress</td>
+                        </tr>
+                        <tr>
+                            <th>Hippo Email Validation Status</th>
+                            <td>@Model.PrimaryResult</td>
+                        </tr>
+                        <tr>
+                            <th>Hippo Email Validation Reason</th>
+                            <td>@Model.ResultReason</td>
+                        </tr>
+                        <tr>
+                            <th>Execution Time</th>
+                            <td>@Model.ExecutionTime (ms)</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        }
+    </div>
+</div>

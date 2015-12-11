@@ -137,7 +137,6 @@ namespace EmailHippo.EmailVerify.Api.Client
                 }
 
                 appDomainLicenseKey = appSetting;
-
             }
 
             Interlocked.Exchange(ref initialized, 1);

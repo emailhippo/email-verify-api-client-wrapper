@@ -48,7 +48,7 @@ namespace EmailHippo.EmailVerify.Api.Client.Services.EmailHippo.V2
     /// <summary>
     ///     The default service.
     /// </summary>
-    public sealed class DefaultService : IService<VerificationRequest, VerificationResponses, ProgressEventArgs>
+    internal sealed class DefaultService : IService<VerificationRequest, VerificationResponses, ProgressEventArgs>
     {
         #region Fields
 
@@ -173,7 +173,7 @@ namespace EmailHippo.EmailVerify.Api.Client.Services.EmailHippo.V2
             try
             {
                 processLocalAsync =
-                    await this.ProcessLocalAsync(request.Emails.ToSafeEnumerable().ToList(), cancellationToken, Environment.ProcessorCount);
+                    await this.ProcessLocalAsync(request.Emails.ToSafeEnumerable().ToList(), cancellationToken);
             }
             catch (Exception exception)
             {
@@ -231,104 +231,29 @@ namespace EmailHippo.EmailVerify.Api.Client.Services.EmailHippo.V2
         /// <param name="cancellationToken">
         /// The cancellation token.
         /// </param>
-        /// <param name="degreeOfParallelism">
-        /// The degree of parallelism.
-        /// </param>
         /// <returns>
         /// The <see cref="Task"/>.
         /// </returns>
         internal async Task<VerificationResponses> ProcessLocalAsync(
             IEnumerable<string> emails, 
-            CancellationToken cancellationToken, 
-            int degreeOfParallelism = 1)
+            CancellationToken cancellationToken)
         {
-            var currentIndexCounter = 0;
-            Interlocked.Exchange(ref currentIndexCounter, 0);
-
-            var rtnBuilder = new List<VerificationResponse>();
             
             var processingList = emails.ToSafeEnumerable().ToList();
 
-            var totalCount = processingList.Count();
+            var totalCount = processingList.Count;
 
-            var actionBlock = new ActionBlock<string>(
-                async email =>
-                    {
-                        Entities.Clients.V2.VerificationResponse verificationResponse = null;
-                        try
-                        {
-                            verificationResponse =
-                                await
-                                this.clientProxy.ProcessAsync(
-                                    new Entities.Clients.V2.VerificationRequest { Email = email }, 
-                                    cancellationToken);
-                        }
-                        catch (Exception exception)
-                        {
-                            ExceptionLoggingEventSource.Log.Error(exception);
-                        }
+            var queue = new BatchBlock<string>(5);
 
-                        if (verificationResponse != null)
-                        {
-                            var response = new VerificationResponse
-                                               {
-                                                   Domain = verificationResponse.Domain,
-                                                   Duration = verificationResponse.Duration,
-                                                   Email = verificationResponse.Email,
-                                                   IsDisposable = verificationResponse.IsDisposable,
-                                                   IsFree = verificationResponse.IsFree,
-                                                   IsRole = verificationResponse.IsRole,
-                                                   MailServerLocation = verificationResponse.MailServerLocation,
-                                                   Reason = verificationResponse.Reason,
-                                                   Result = verificationResponse.Result,
-                                                   User = verificationResponse.User
-                                               };
+            Produce(queue, processingList);
 
-                            rtnBuilder.Add(response);
-                            Interlocked.Increment(ref currentIndexCounter);
+            var consumeAsync = this.ConsumeAsync(queue, totalCount, cancellationToken);
 
-                            /*Progress calculations are meaningless for parallel processing therefore set to zero. In parallel mode, event will still return response*/
-                            var i = degreeOfParallelism == 1 ? CalculatePercentageProgress(currentIndexCounter, totalCount) : 0;
+            await Task.WhenAll(consumeAsync, queue.Completion);
 
-                            this.OnProgressChanged(new ProgressEventArgs(totalCount, i, response));
-                        }
-                        else
-                        {
-                            ExceptionLoggingEventSource.Log.Warning(
-                                "DefaultService.ProcessLocalAsync verificationResponse is null!");
-                        }
-                    }, 
-                new ExecutionDataflowBlockOptions
-                    {
-                        MaxDegreeOfParallelism = degreeOfParallelism, 
-                        CancellationToken = cancellationToken, 
-                        TaskScheduler = TaskScheduler.Default
-                    });
-            
-            foreach (string email in processingList)
-            {
-                actionBlock.Post(email);
-            }
+            var verificationResponses = await consumeAsync;
 
-            actionBlock.Complete();
-
-            try
-            {
-                await actionBlock.Completion;
-            }
-            catch (AggregateException aggregateException)
-            {
-                aggregateException.Handle(
-                    ae =>
-                        {
-                            ExceptionLoggingEventSource.Log.Error(ae);
-                            return true;
-                        });
-            }
-
-            var readOnlyCollection = new ReadOnlyCollection<VerificationResponse>(rtnBuilder);
-
-            return new VerificationResponses { Results = readOnlyCollection };
+            return verificationResponses;
         }
 
         /// <summary>
@@ -342,6 +267,111 @@ namespace EmailHippo.EmailVerify.Api.Client.Services.EmailHippo.V2
             {
                 handler(this, e);
             }
+        }
+
+        /// <summary>
+        /// Produces the specified queue.
+        /// </summary>
+        /// <param name="queue">The queue.</param>
+        /// <param name="values">The values.</param>
+        private static void Produce(ITargetBlock<string> queue, IEnumerable<string> values)
+        {
+            foreach (var value in values)
+            {
+                queue.Post(value);
+            }
+
+            queue.Complete();
+        }
+
+        /// <summary>
+        /// Consumes the asynchronous.
+        /// </summary>
+        /// <param name="queue">The queue.</param>
+        /// <param name="totalCount">The total count.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        private async Task<VerificationResponses> ConsumeAsync(BatchBlock<string> queue, int totalCount, CancellationToken cancellationToken)
+        {
+            var rtnBuilder = new List<VerificationResponse>();
+
+            var currentIndexCounter = 0;
+            Interlocked.Exchange(ref currentIndexCounter, 0);
+            
+            while (await queue.OutputAvailableAsync(cancellationToken))
+            {
+                Entities.Clients.V2.VerificationResponse verificationResponse = null;
+
+                IEnumerable<string> emails = await queue.ReceiveAsync(cancellationToken);
+
+                await Task.Delay(500, cancellationToken);
+
+                if (emails == null || !emails.Any())
+                {
+                    continue;
+                }
+
+                var list = emails.ToList();
+
+                foreach (var email in list)
+                {
+                    try
+                    {
+                        verificationResponse =
+                            await
+                            this.clientProxy.ProcessAsync(
+                                new Entities.Clients.V2.VerificationRequest { Email = email },
+                                cancellationToken);
+                    }
+                    catch (AggregateException aggregateException)
+                    {
+                        aggregateException.Handle(
+                            ae =>
+                                {
+                                    ExceptionLoggingEventSource.Log.Error(ae);
+                                    return false;
+                                });
+                    }
+                    catch (Exception exception)
+                    {
+                        ExceptionLoggingEventSource.Log.Error(exception);
+                    }
+
+                    if (verificationResponse != null)
+                    {
+                        var response = new VerificationResponse
+                                           {
+                                               Domain = verificationResponse.Domain,
+                                               Duration = verificationResponse.Duration,
+                                               Email = verificationResponse.Email,
+                                               IsDisposable = verificationResponse.IsDisposable,
+                                               IsFree = verificationResponse.IsFree,
+                                               IsRole = verificationResponse.IsRole,
+                                               MailServerLocation = verificationResponse.MailServerLocation,
+                                               Reason = verificationResponse.Reason,
+                                               Result = verificationResponse.Result,
+                                               User = verificationResponse.User
+                                           };
+
+                        rtnBuilder.Add(response);
+                        Interlocked.Increment(ref currentIndexCounter);
+
+                        /*Progress calculations are meaningless for parallel processing therefore set to zero. In parallel mode, event will still return response*/
+                        var i = CalculatePercentageProgress(currentIndexCounter, totalCount);
+
+                        this.OnProgressChanged(new ProgressEventArgs(totalCount, i, response));
+                    }
+                    else
+                    {
+                        ExceptionLoggingEventSource.Log.Warning(
+                            "DefaultService.ProcessLocalAsync verificationResponse is null!");
+                    }        
+                }
+            }
+
+            var readOnlyCollection = new ReadOnlyCollection<VerificationResponse>(rtnBuilder);
+
+            return new VerificationResponses { Results = readOnlyCollection };
         }
 
         #endregion

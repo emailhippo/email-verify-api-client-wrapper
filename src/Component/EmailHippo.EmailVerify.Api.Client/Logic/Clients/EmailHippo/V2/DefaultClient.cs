@@ -54,7 +54,7 @@ namespace EmailHippo.EmailVerify.Api.Client.Logic.Clients.EmailHippo.V2
         private const string ApiUrl = @"https://api1.27hub.com/api/emh/a/v2";
 
         /// <summary>
-        /// 0 = ApiUrl
+        /// 0 = API URL
         /// 1 = Email address to query
         /// 2 = API Key
         /// </summary>
@@ -75,7 +75,7 @@ namespace EmailHippo.EmailVerify.Api.Client.Logic.Clients.EmailHippo.V2
         /// Initializes a new instance of the <see cref="DefaultClient"/> class.
         /// </summary>
         /// <param name="authConfiguration">
-        /// The auth configuration.
+        /// The authentication configuration.
         /// </param>
         public DefaultClient(IConfiguration<KeyAuthentication> authConfiguration)
         {
@@ -205,7 +205,7 @@ namespace EmailHippo.EmailVerify.Api.Client.Logic.Clients.EmailHippo.V2
             ActivityLoggingEventSource.Log.HttpGetRequestLogging(@"DefaultClient.ProcessAsync", requestUrl);
 
             var stopwatch = Stopwatch.StartNew();
-
+            
             var myRequest = (HttpWebRequest)WebRequest.Create(requestUrl);
 
             WebResponse webResponse = null;
