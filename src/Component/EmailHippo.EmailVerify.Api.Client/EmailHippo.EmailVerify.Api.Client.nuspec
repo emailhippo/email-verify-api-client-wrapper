@@ -11,7 +11,7 @@
     <iconUrl>https://s3.amazonaws.com/emailhippo/bizbranding/co.logos/eh1-128x128.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes>Initial release.</releaseNotes>
+    <releaseNotes>Added PDB symbols for consumer debugging.</releaseNotes>
     <copyright>Copyright Email Hippo Ltd 2015</copyright>
     <tags>Email Validation Verification API</tags>
     <frameworkAssemblies>
@@ -23,6 +23,7 @@
   </metadata>
   <files>
     <file src="bin\$configuration$\$id$.xml"/>
+    <file src="bin\$configuration$\$id$.pdb"/>
     <file src="readme.txt" target="" />
   </files>
 </package>
