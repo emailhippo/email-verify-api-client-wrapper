@@ -214,7 +214,7 @@ namespace EmailHippo.EmailVerify.Api.Client.Logic.Clients.EmailHippo.V2
 
             try
             {
-                webResponse = await myRequest.GetResponseAsync();
+                webResponse = await myRequest.GetResponseAsync().ConfigureAwait(false);
 
                 using (var reader = new StreamReader(webResponse.GetResponseStream()))
                 {

@@ -173,7 +173,7 @@ namespace EmailHippo.EmailVerify.Api.Client.Services.EmailHippo.V2
             try
             {
                 processLocalAsync =
-                    await this.ProcessLocalAsync(request.Emails.ToSafeEnumerable().ToList(), cancellationToken);
+                    await this.ProcessLocalAsync(request.Emails.ToSafeEnumerable().ToList(), cancellationToken).ConfigureAwait(false);
             }
             catch (Exception exception)
             {
@@ -251,7 +251,7 @@ namespace EmailHippo.EmailVerify.Api.Client.Services.EmailHippo.V2
 
             await Task.WhenAll(consumeAsync, queue.Completion);
 
-            var verificationResponses = await consumeAsync;
+            var verificationResponses = await consumeAsync.ConfigureAwait(false);
 
             return verificationResponses;
         }
@@ -290,21 +290,21 @@ namespace EmailHippo.EmailVerify.Api.Client.Services.EmailHippo.V2
         /// <param name="queue">The queue.</param>
         /// <param name="totalCount">The total count.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
+        /// <returns>The <see cref="Task"/>.</returns>
         private async Task<VerificationResponses> ConsumeAsync(BatchBlock<string> queue, int totalCount, CancellationToken cancellationToken)
         {
             var rtnBuilder = new List<VerificationResponse>();
 
             var currentIndexCounter = 0;
             Interlocked.Exchange(ref currentIndexCounter, 0);
-            
-            while (await queue.OutputAvailableAsync(cancellationToken))
+
+            while (await queue.OutputAvailableAsync(cancellationToken).ConfigureAwait(false))
             {
                 Entities.Clients.V2.VerificationResponse verificationResponse = null;
 
-                IEnumerable<string> emails = await queue.ReceiveAsync(cancellationToken);
+                IEnumerable<string> emails = await queue.ReceiveAsync(cancellationToken).ConfigureAwait(false);
 
-                await Task.Delay(500, cancellationToken);
+                await Task.Delay(500, cancellationToken).ConfigureAwait(false);
 
                 if (emails == null || !emails.Any())
                 {
@@ -321,7 +321,7 @@ namespace EmailHippo.EmailVerify.Api.Client.Services.EmailHippo.V2
                             await
                             this.clientProxy.ProcessAsync(
                                 new Entities.Clients.V2.VerificationRequest { Email = email },
-                                cancellationToken);
+                                cancellationToken).ConfigureAwait(false);
                     }
                     catch (AggregateException aggregateException)
                     {

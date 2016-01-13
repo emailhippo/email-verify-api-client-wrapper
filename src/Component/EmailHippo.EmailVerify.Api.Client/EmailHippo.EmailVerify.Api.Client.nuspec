@@ -11,8 +11,8 @@
     <iconUrl>https://s3.amazonaws.com/emailhippo/bizbranding/co.logos/eh1-128x128.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes>Added PDB symbols for consumer debugging.</releaseNotes>
-    <copyright>Copyright Email Hippo Ltd 2015</copyright>
+    <releaseNotes>Added ConfigureAwait(false) to async Tasks to improve responsiveness.</releaseNotes>
+    <copyright>Copyright Email Hippo Ltd 2015 - 2016</copyright>
     <tags>Email Validation Verification API</tags>
     <frameworkAssemblies>
       <frameworkAssembly assemblyName="System" />
