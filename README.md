@@ -81,7 +81,7 @@ Once you have a reference to the client object, go ahead and use it.
 
 __Example 3__ - checking one or more email address synchronously
 ```c#
-var responses = myService.Process(new VerificationRequest{Emails = new List<string>{"me@here.com"});
+var responses = myService.Process(new VerificationRequest{Emails = new List<string>{"me@here.com"}});
 
 /*Process responses*/
 /*..responses*/
@@ -89,7 +89,7 @@ var responses = myService.Process(new VerificationRequest{Emails = new List<stri
 
 __Example 4__ - checking more than one email address asynchronously
 ```c#
-var responses = myService.ProcessAsync(new VerificationRequest{Emails = new List<string>{"me@here.com","me2@here.com"}, CancellationToken.None).Result;
+var responses = myService.ProcessAsync(new VerificationRequest{Emails = new List<string>{"me@here.com","me2@here.com"}, CancellationToken.None}).Result;
 
 /*Process responses*/
 /*..responses*/
