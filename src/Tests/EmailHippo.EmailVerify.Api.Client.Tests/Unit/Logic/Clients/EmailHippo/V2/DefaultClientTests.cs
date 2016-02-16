@@ -47,7 +47,7 @@ namespace EmailHippo.EmailVerify.Api.Client.Tests.Unit.Logic.Clients.EmailHippo.
     /// <summary>
     /// The default client tests.
     /// </summary>
-    [Ignore("Tested and passed successfully 14 Sept '15. ROC")]
+    [Ignore("Tested and passed successfully 16 Feb '16. ROC")]
     [TestFixture]
     public class DefaultClientTests : TestBase
     {
@@ -68,7 +68,7 @@ namespace EmailHippo.EmailVerify.Api.Client.Tests.Unit.Logic.Clients.EmailHippo.
         #region Constants
 
         /*Visit https://www.emailhippo.com to get your license key*/
-        private const string MyLicenseKey = @"{your key here}";
+        private const string MyLicenseKey = @"{your license here}";
 
         #endregion
 

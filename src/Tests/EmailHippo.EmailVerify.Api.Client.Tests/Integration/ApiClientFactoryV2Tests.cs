@@ -15,7 +15,9 @@ namespace EmailHippo.EmailVerify.Api.Client.Tests.Integration
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
+    using System.Diagnostics.Contracts;
     using System.Diagnostics.Tracing;
+    using System.IO;
     using System.Threading;
 
     using EmailHippo.EmailVerify.Api.Client.Diagnostics.EventSources;
@@ -27,12 +29,12 @@ namespace EmailHippo.EmailVerify.Api.Client.Tests.Integration
 
     using NUnit.Framework;
 
-    [Ignore("Tested and passed successfully 15 Sept '15. ROC")]
+    [Ignore("Tested and passed successfully 16 Feb '16. ROC")]
     [TestFixture]
     public class ApiClientFactoryV2Tests : TestBase
     {
         /*Visit https://www.emailhippo.com to get your license key*/
-        private const string MyLicenseKey = @"{your key here}";
+        private const string MyLicenseKey = @"{your license here}";
         
         #region Fields
         
@@ -74,6 +76,34 @@ namespace EmailHippo.EmailVerify.Api.Client.Tests.Integration
 
             service.ProgressChanged -= (o, args) => Console.WriteLine(JsonConvert.SerializeObject(args));
         }
+
+
+        [Test]
+        public void CreateAndRunPerformanceTest_ExpectTimingsOutputOnly()
+        {
+            // arrange
+            var service = ApiClientFactoryV2.Create();
+            service.ProgressChanged += (o, args) => Console.WriteLine(JsonConvert.SerializeObject(args));
+
+            // act
+            var stopwatch = Stopwatch.StartNew();
+            /*var verificationResponses = service.Process(
+                new VerificationRequest { Emails = TestList1 });*/
+            var verificationResponses = service.ProcessAsync(
+                new VerificationRequest { Emails = PerformanceTestList1 },
+                CancellationToken.None).Result;
+            stopwatch.Stop();
+
+
+            // assert
+            Assert.IsNotNull(verificationResponses);
+            Console.WriteLine(
+                JsonConvert.SerializeObject(verificationResponses));
+            WriteTimeElapsed(stopwatch.ElapsedMilliseconds);
+
+            service.ProgressChanged -= (o, args) => Console.WriteLine(JsonConvert.SerializeObject(args));
+        }
+
 
         [SetUp]
         public void Setup()
@@ -134,6 +164,37 @@ namespace EmailHippo.EmailVerify.Api.Client.Tests.Integration
                                "abuse@microsoft.com",
                                "abuse@gmail.com"
                            };
+            }
+        }
+
+        /// <summary>
+        /// Gets the performance test list1.
+        /// </summary>
+        /// <value>
+        /// The performance test list1.
+        /// </value>
+        private static List<string> PerformanceTestList1
+        {
+            get
+            {
+                Contract.Ensures(Contract.Result<List<string>>() != null);
+
+                const int ReturnedItems = 50;
+                const string DomainToTest = @"gmail.com";
+
+                var rtn = new List<string>();
+
+                for (int i = 0; i < ReturnedItems; i++)
+                {
+                    var randomFileName = Path.GetRandomFileName();
+
+                    var concat = string.Concat(randomFileName, "@", DomainToTest);
+
+                    rtn.Add(concat);
+                }
+
+
+                return rtn;
             }
         }
 

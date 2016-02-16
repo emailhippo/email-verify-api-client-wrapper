@@ -11,7 +11,7 @@
     <iconUrl>https://s3.amazonaws.com/emailhippo/bizbranding/co.logos/eh1-128x128.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes>Added ConfigureAwait(false) to async Tasks to improve responsiveness.</releaseNotes>
+    <releaseNotes>Increased overall speed for lists of emails by increasing parallel processing capability.</releaseNotes>
     <copyright>Copyright Email Hippo Ltd 2015 - 2016</copyright>
     <tags>Email Validation Verification API</tags>
     <frameworkAssemblies>

@@ -36,7 +36,29 @@ If you're working in the .NET environment, this package can save you __hours of 
  * __Parallel__ batch processing available.
  * __Progress reporting__ via event callbacks built in.
  * __Extensive Logging__ built in using async [SLAB].
-  
+
+## Performance
+Fast throughput can be achieved by sending lists (IList<string>) of emails for processing. Speed of overall processing depends on your hardware configuration (i.e. number of effective CPU cores and available RAM).
+
+Processing for lists of email is executed in parallel using multiple threads.
+
+### Typical Processing Speed Results
+
+#### Test Hardware Configuration
+* __CPU__ : Intel 2700k (4 core + HT = 8 effective cores)
+* __RAM__ : 32GB
+* __Network (WAN)__ : Fibre (40Mb/sec)
+
+__notes on tests__ :
+ * tests run on sequence of randomized @gmail email addresses
+ * caching not a test factor (as using random email addresses)
+
+| # Emails | Run Time to Completion (ms)  | Processing Rate  (emails /sec) |
+|---------:|-----------------------------:|-------------------------------:|
+|       20 |                        7,803 |                           2.56 |
+|       50 |                       1,4755 |                           3.38 |
+|      100 |                       27,128 |                           3.69 |
+
 ## How to use the package
 Please note that full example code for all of the snippets below are available in the "EmailHippo.EmailVerify.Api.Client.Tests" 
 project which can be found in the GitHub repository for this project.
