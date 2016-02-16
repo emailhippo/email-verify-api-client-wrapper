@@ -56,7 +56,7 @@ __notes on tests__ :
 | # Emails | Run Time to Completion (ms)  | Processing Rate  (emails /sec) |
 |---------:|-----------------------------:|-------------------------------:|
 |       20 |                        7,803 |                           2.56 |
-|       50 |                       1,4755 |                           3.38 |
+|       50 |                       14,755 |                           3.38 |
 |      100 |                       27,128 |                           3.69 |
 
 ## How to use the package
