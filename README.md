@@ -64,7 +64,7 @@ Please note that full example code for all of the snippets below are available i
 project which can be found in the GitHub repository for this project.
 
 ### Step 1 - license and initialize
-This software must be initialized before use. Initializaton is only needed once per app domain. The best palce to do this in in the hosting process bootstrap code. For example, a web app use global.asax, a console app use Main() method.
+This software must be initialized before use. Initializaton is only needed once per app domain. The best place to do this in in the hosting process bootstrap code. For example, a web app use global.asax, a console app use Main() method.
 
 Supply license configuration to the software by either:
 
